@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Roboto', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+      .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+      h1 { text-align: center; color: #1a73e8; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+      th { background-color: #f8f9fa; font-weight: 500; }
+      .loading { text-align: center; color: #666; font-style: italic; margin-top: 20px; }
+      .error { color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 4px; margin-top: 20px; }
+      .chart-container { margin-top: 40px; display: flex; flex-direction: column; gap: 15px; }
+      .bar { background: #e0e0e0; border-radius: 4px; overflow: hidden; height: 24px; position: relative; }
+      .bar-fill { background: #1a73e8; height: 100%; transition: width 0.5s ease; }
+      .bar-label { position: absolute; left: 10px; top: 3px; color: #fff; font-size: 14px; font-weight: bold; }
+      .score-text { float: right; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Pesquisa de Clima Organizacional</h1>
+      <h2>Dashboard Administrativo</h2>
+      
+      <div id="content">
+        <div class="loading">Carregando indicadores...</div>
+      </div>
+    </div>
+
+    <script>
+      function init() {
+        google.script.run
+          .withSuccessHandler(exibirDados)
+          .withFailureHandler(exibirErro)
+          .getDashboardData();
+      }
+
+      function exibirDados(dados) {
+        const content = document.getElementById('content');
+        if (dados.error) {
+          exibirErro(dados.error);
+          return;
+        }
+
+        let html = '<table><tr><th>ndice</th><th>Dimens&atilde;o</th><th>Respostas</th><th>M&eacute;dia (1-5)</th></tr>';
+        
+        let chartsHtml = '<div class="chart-container"><h3>Resumo por Dimens&atilde;o</h3>';
+        
+        dados.indicadores.forEach(function(ind) {
+          const isSuprimido = ind.media === 'Suprimido';
+          const mediaText = isSuprimido ? 'Suprimido' : Number(ind.media).toFixed(2);
+          html += `<tr>
+            <td>${ind.indice}</td>
+            <td>${ind.dimensao}</td>
+            <td>${ind.respostas}</td>
+            <td>${mediaText}</td>
+          </tr>`;
+          
+          if (!isSuprimido) {
+            const width = (Number(ind.media) / 5) * 100;
+            chartsHtml += `
+              <div>
+                <div style="margin-bottom: 5px;">${ind.dimensao} <span class="score-text">${mediaText} / 5</span></div>
+                <div class="bar">
+                  <div class="bar-fill" style="width: ${width}%;"></div>
+                </div>
+              </div>
+            `;
+          }
+        });
+        
+        html += '</table>';
+        chartsHtml += '</div>';
+        
+        content.innerHTML = html + chartsHtml;
+      }
+
+      function exibirErro(erro) {
+        document.getElementById('content').innerHTML = '<div class="error">' + erro + '</div>';
+      }
+
+      window.onload = init;
+    </script>
+  </body>
+</html>

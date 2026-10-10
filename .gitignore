@@ -1,0 +1,12 @@
+node_modules/
+.clasp.json
+.clasprc.json
+.env
+.env.*
+!.env.example
+client_secret*.json
+credentials*.json
+*.csv
+*.xlsx
+*.log
+.DS_Store

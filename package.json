@@ -1,0 +1,13 @@
+{
+  "name": "pesquisa-clima-organizacional",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Modelo aberto de pesquisa institucional em Google Apps Script",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "check": "node tests/syntax-check.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
