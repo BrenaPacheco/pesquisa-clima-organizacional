@@ -10,12 +10,12 @@ function doGet(e) {
 
 function getDashboardData() {
   const id = PropertiesService.getScriptProperties().getProperty('PLANILHA_ID');
-  if (!id) return { error: 'Planilha no configurada. Execute criarPesquisaClimaParintins() antes.' };
+  if (!id) return { error: 'Planilha não configurada. Execute criarPesquisaClimaParintins() antes.' };
   
   try {
     const arquivo = SpreadsheetApp.openById(id);
     const aba = arquivo.getSheetByName('INDICADORES');
-    if (!aba) return { error: 'Aba INDICADORES no encontrada. Execute atualizarIndicadores().' };
+    if (!aba) return { error: 'Aba INDICADORES não encontrada. Execute atualizarIndicadores().' };
     
     const dados = aba.getDataRange().getValues();
     if (dados.length < 2) return { error: 'Nenhum indicador gerado ainda.' };
@@ -23,7 +23,7 @@ function getDashboardData() {
     const linhas = dados.slice(1);
     
     const indicadores = linhas.map(function(row) {
-      if (String(row[0]).startsWith("ATEN")) return null; // Ignora linha de ateno
+      if (String(row[0]).startsWith("ATENÇÃO") || String(row[0]).startsWith("ATEN")) return null; // Ignora linha de aviso
       return {
         indice: row[0],
         dimensao: row[1],

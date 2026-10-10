@@ -3,7 +3,7 @@ function atualizarIndicadores() {
   const id = PropertiesService.getScriptProperties().getProperty('PLANILHA_ID');
   if (!id) throw new Error('Execute criarPesquisaClimaParintins() antes.');
   const arquivo = SpreadsheetApp.openById(id);
-  const respostas = arquivo.getSheets().find(function(a) { return /^Respostas ao formulário|^Form Responses/i.test(a.getName()); });
+  const respostas = arquivo.getSheets().find(function(a) { return /^Respostas|^Form Responses/i.test(a.getName()); });
   if (!respostas) throw new Error('A aba de respostas ainda não existe. Envie uma resposta de teste.');
   const matriz = respostas.getDataRange().getValues();
   const aba = arquivo.getSheetByName('INDICADORES') || arquivo.insertSheet('INDICADORES');
